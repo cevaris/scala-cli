@@ -19,17 +19,22 @@ package com.cli
 object Parser {
 
 
-  val NUMBER  = "([0-9]+)".r
-  val ARG_TUPLE  = "--([a-zA-Z]+)=([a-zA-Z0-9]+)".r
+  val ArgFlag  = """--([a-zA-Z\-]+)""".r
+  val ArgTuple = """--([a-zA-Z]+)=([a-zA-Z]+)""".r
 
   def clean(args : Array[String]): Array[String] = {
     for(arg <- args) yield arg.trim
   }
 
   def parse(args : Array[String]) = {
-    def go(arg: String) =  arg match {
-      case NUMBER(arg) => println(s"Found Number $arg")
-      case defualt => println(s"Could not parse $defualt")
+
+    def go(arg: String) =  {
+      println(s"\nMatching '$arg'")
+      arg match {
+        case ArgFlag(name) => println(s"Found Flag $name")
+        case ArgTuple(name, value) => println(s"Found Tuple $name=>$value")
+        case defualt => println(s"Could not parse $defualt")
+      }
     }
 
     args.foreach(go)
@@ -37,13 +42,8 @@ object Parser {
   
   def main(args : Array[String]) {
 
-    // clean(args).foreach(println)
     parse(clean(args))
 
-
-    
-    // val myList = List(1,2,3)
-    // println("Length of " + myList + " is: " + listLength(myList))
   }
   
   def listLength[A](list: List[A]) : Int = {
